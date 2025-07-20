@@ -1,0 +1,47 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pinkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EC4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BE185D;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5B21B6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="darkPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5B21B6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B1A5C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Left cube -->
+  <g transform="translate(10, 16)">
+    <!-- Top face -->
+    <path d="M0 -8 L6 -4 L0 0 L-6 -4 Z" fill="url(#pinkGradient)"/>
+    <!-- Left face -->
+    <path d="M-6 -4 L0 0 L0 8 L-6 4 Z" fill="url(#purpleGradient)"/>
+    <!-- Right face -->
+    <path d="M0 0 L6 -4 L6 4 L0 8 Z" fill="url(#darkPurple)"/>
+  </g>
+  
+  <!-- Right cube -->
+  <g transform="translate(22, 16)">
+    <!-- Top face -->
+    <path d="M0 -8 L6 -4 L0 0 L-6 -4 Z" fill="url(#darkPurple)"/>
+    <!-- Left face -->
+    <path d="M-6 -4 L0 0 L0 8 L-6 4 Z" fill="url(#pinkGradient)"/>
+    <!-- Right face -->
+    <path d="M0 0 L6 -4 L6 4 L0 8 Z" fill="url(#purpleGradient)"/>
+  </g>
+  
+  <!-- Letter N overlay -->
+  <g transform="translate(16, 16)">
+    <path d="M-4 -6 L-4 6 M-4 -6 L4 6 M4 -6 L4 6" 
+          stroke="#5B21B6" 
+          stroke-width="2" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+  </g>
+</svg>
+

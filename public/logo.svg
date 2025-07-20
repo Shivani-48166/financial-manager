@@ -1,0 +1,52 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pinkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EC4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BE185D;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5B21B6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="darkPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5B21B6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B1A5C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Left cube -->
+  <g transform="translate(20, 32)">
+    <!-- Top face -->
+    <path d="M0 -16 L12 -8 L0 0 L-12 -8 Z" fill="url(#pinkGradient)"/>
+    <!-- Left face -->
+    <path d="M-12 -8 L0 0 L0 16 L-12 8 Z" fill="url(#purpleGradient)"/>
+    <!-- Right face -->
+    <path d="M0 0 L12 -8 L12 8 L0 16 Z" fill="url(#darkPurple)"/>
+  </g>
+  
+  <!-- Right cube -->
+  <g transform="translate(44, 32)">
+    <!-- Top face -->
+    <path d="M0 -16 L12 -8 L0 0 L-12 -8 Z" fill="url(#darkPurple)"/>
+    <!-- Left face -->
+    <path d="M-12 -8 L0 0 L0 16 L-12 8 Z" fill="url(#pinkGradient)"/>
+    <!-- Right face -->
+    <path d="M0 0 L12 -8 L12 8 L0 16 Z" fill="url(#purpleGradient)"/>
+  </g>
+  
+  <!-- Letter N overlay -->
+  <g transform="translate(32, 32)">
+    <path d="M-8 -12 L-8 12 M-8 -12 L8 12 M8 -12 L8 12" 
+          stroke="#5B21B6" 
+          stroke-width="3" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+  </g>
+  
+  <!-- App name -->
+  <text x="32" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="700" fill="#5B21B6">NUDGIFY</text>
+</svg>
+
+
+
