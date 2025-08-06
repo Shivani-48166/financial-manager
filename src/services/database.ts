@@ -25,8 +25,16 @@ export class DatabaseService {
    * Initialize database with PIN-derived encryption key
    */
   async initialize(pin: string): Promise<void> {
-    const { key } = await EncryptionService.deriveKeyFromPin(pin);
-    this.encryptionKey = key;
+    // Get or create salt for consistent key derivation
+    let salt = this.getSalt();
+    if (!salt) {
+      const { key, salt: newSalt } = await EncryptionService.deriveKeyFromPin(pin);
+      this.setSalt(newSalt);
+      this.encryptionKey = key;
+    } else {
+      const { key } = await EncryptionService.deriveKeyFromPin(pin, salt);
+      this.encryptionKey = key;
+    }
 
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
@@ -40,6 +48,52 @@ export class DatabaseService {
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
         this.createObjectStores(db);
+      };
+    });
+  }
+
+  /**
+   * Get stored salt from localStorage
+   */
+  private getSalt(): Uint8Array | null {
+    const saltString = localStorage.getItem('fm_encryption_salt');
+    if (!saltString) return null;
+
+    try {
+      const saltArray = JSON.parse(saltString);
+      return new Uint8Array(saltArray);
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Store salt in localStorage
+   */
+  private setSalt(salt: Uint8Array): void {
+    const saltArray = Array.from(salt);
+    localStorage.setItem('fm_encryption_salt', JSON.stringify(saltArray));
+  }
+
+  /**
+   * Clear all data and reset encryption salt (for testing/reset)
+   */
+  async clearAllData(): Promise<void> {
+    if (this.db) {
+      this.db.close();
+    }
+
+    // Clear localStorage salt
+    localStorage.removeItem('fm_encryption_salt');
+
+    // Delete the entire database
+    return new Promise((resolve, reject) => {
+      const deleteRequest = indexedDB.deleteDatabase(this.DB_NAME);
+      deleteRequest.onerror = () => reject(deleteRequest.error);
+      deleteRequest.onsuccess = () => {
+        this.db = null;
+        this.encryptionKey = null;
+        resolve();
       };
     });
   }

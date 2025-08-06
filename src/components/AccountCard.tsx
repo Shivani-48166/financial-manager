@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { CreditCard, Wallet, Building, PiggyBank, MoreVertical } from 'lucide-react';
 import { Account } from '../types';
 import { formatCurrency } from '../utils/formatCurrency';
+import React from 'react';
 
 interface AccountCardProps {
   account: Account;

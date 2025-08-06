@@ -86,7 +86,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const hashedPin = await hashPin(pin);
       localStorage.setItem('fm_pin_hash', hashedPin);
+
+      // Initialize database with the new PIN
+      await db.initialize(pin);
+
       setHasPin(true);
+      setIsAuthenticated(true);
+      resetAutoLockTimer();
     } catch (error) {
       console.error('Error setting up PIN:', error);
       throw new Error('Failed to setup PIN');

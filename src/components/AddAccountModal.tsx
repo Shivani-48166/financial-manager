@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { X, CreditCard, Wallet, Building, PiggyBank } from 'lucide-react';
 import { useAccounts } from '../hooks/useAccounts';
 

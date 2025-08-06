@@ -34,7 +34,7 @@ export const useAccounts = () => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
+
       await db.addAccount(newAccount);
       setAccounts(prev => [...prev, newAccount]);
       return newAccount;
@@ -52,11 +52,45 @@ export const useAccounts = () => {
     return accounts.find(account => account.id === id);
   }, [accounts]);
 
+  const updateAccount = useCallback(async (accountId: string, updates: Partial<Omit<Account, 'id' | 'createdAt'>>) => {
+    try {
+      const existingAccount = accounts.find(acc => acc.id === accountId);
+      if (!existingAccount) {
+        throw new Error('Account not found');
+      }
+
+      const updatedAccount: Account = {
+        ...existingAccount,
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      };
+
+      await db.updateAccount(updatedAccount);
+      setAccounts(prev => prev.map(acc => acc.id === accountId ? updatedAccount : acc));
+      return updatedAccount;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update account');
+      throw err;
+    }
+  }, [accounts, db]);
+
+  const deleteAccount = useCallback(async (accountId: string) => {
+    try {
+      await db.deleteAccount(accountId);
+      setAccounts(prev => prev.filter(acc => acc.id !== accountId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete account');
+      throw err;
+    }
+  }, [db]);
+
   return {
     accounts,
     loading,
     error,
     addAccount,
+    updateAccount,
+    deleteAccount,
     getTotalBalance,
     getAccountById,
     refresh: loadAccounts,
