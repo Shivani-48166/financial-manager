@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { DatabaseService } from '../services/database';
+import { eventService, EVENTS } from '../services/events';
 import type { Account } from '../types';
 
 export const useAccounts = () => {
@@ -24,6 +25,17 @@ export const useAccounts = () => {
 
   useEffect(() => {
     loadAccounts();
+
+    // Listen for transaction updates to refresh account balances
+    const handleTransactionsUpdated = () => {
+      loadAccounts();
+    };
+
+    eventService.on(EVENTS.TRANSACTIONS_UPDATED, handleTransactionsUpdated);
+
+    return () => {
+      eventService.off(EVENTS.TRANSACTIONS_UPDATED, handleTransactionsUpdated);
+    };
   }, [loadAccounts]);
 
   const addAccount = useCallback(async (account: Omit<Account, 'id' | 'createdAt' | 'updatedAt'>) => {
@@ -78,6 +90,9 @@ export const useAccounts = () => {
     try {
       await db.deleteAccount(accountId);
       setAccounts(prev => prev.filter(acc => acc.id !== accountId));
+
+      // Emit event to notify other components that an account was deleted
+      eventService.emit(EVENTS.ACCOUNT_DELETED, { accountId });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete account');
       throw err;

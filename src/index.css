@@ -108,6 +108,16 @@
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
+/* Extra small breakpoint utilities */
+@media (min-width: 475px) {
+  .xs\:inline {
+    display: inline;
+  }
+  .xs\:hidden {
+    display: none;
+  }
+}
+
 /* Responsive text */
 @media (max-width: 640px) {
   .text-responsive {

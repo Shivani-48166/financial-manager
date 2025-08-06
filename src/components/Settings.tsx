@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Download, Upload, Shield, Moon, Sun, Smartphone, LogOut, Palette } from 'lucide-react';
+import { Download, Upload, Shield, Moon, Sun, Smartphone, LogOut, Palette, Trash2 } from 'lucide-react';
+import { DeleteUserAccountModal } from './DeleteUserAccountModal';
 import { useAuth } from '../contexts/AuthContext';
 import { DatabaseService } from '../services/database';
 import { EncryptionService } from '../services/encryption';
@@ -11,6 +12,7 @@ export const Settings: React.FC = () => {
   const [autoLock, setAutoLock] = useState(localStorage.getItem('fm_auto_lock') || '15');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
 
   const { biometricEnabled, enableBiometric, logout } = useAuth();
   const db = DatabaseService.getInstance();
@@ -55,6 +57,11 @@ export const Settings: React.FC = () => {
     if (confirm('Are you sure you want to sign out?')) {
       logout();
     }
+  };
+
+  const handleAccountDeleted = () => {
+    // Reload the page to reset the app state
+    window.location.reload();
   };
 
   const handleExportData = async () => {
@@ -285,6 +292,30 @@ export const Settings: React.FC = () => {
         </p>
       </div>
 
+      {/* Danger Zone */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-red-500">
+        <h2 className="text-lg font-medium text-red-600 dark:text-red-400 mb-4">
+          Danger Zone
+        </h2>
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+              Delete Account
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Permanently delete your account and all associated data. This action cannot be undone.
+            </p>
+            <button
+              onClick={() => setShowDeleteAccountModal(true)}
+              className="inline-flex items-center px-4 py-2 border border-red-300 dark:border-red-600 rounded-lg text-sm font-medium text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete My Account
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* About */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
@@ -297,6 +328,14 @@ export const Settings: React.FC = () => {
           <p>No data is sent to external servers</p>
         </div>
       </div>
+
+      {/* Delete Account Modal */}
+      {showDeleteAccountModal && (
+        <DeleteUserAccountModal
+          onClose={() => setShowDeleteAccountModal(false)}
+          onAccountDeleted={handleAccountDeleted}
+        />
+      )}
     </div>
   );
 };

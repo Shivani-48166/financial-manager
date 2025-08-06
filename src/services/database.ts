@@ -99,6 +99,34 @@ export class DatabaseService {
   }
 
   /**
+   * Delete user account and all associated data
+   */
+  async deleteUserAccount(): Promise<void> {
+    // Clear all application data
+    await this.clearAllData();
+
+    // Clear all localStorage data
+    localStorage.removeItem('fm_pin_hash');
+    localStorage.removeItem('fm_encryption_salt');
+    localStorage.removeItem('fm_color_scheme');
+    localStorage.removeItem('fm_auto_lock_enabled');
+    localStorage.removeItem('fm_auto_lock_timeout');
+
+    // Clear any other app-specific data
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('fm_')) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+
+    // Clear session storage as well
+    sessionStorage.clear();
+  }
+
+  /**
    * Create IndexedDB object stores with proper indexes
    */
   private createObjectStores(db: IDBDatabase): void {
@@ -261,9 +289,37 @@ export class DatabaseService {
     });
   }
 
+  async deleteTransactionsByAccountId(accountId: string): Promise<void> {
+    if (!this.db) {
+      throw new Error('Database not initialized');
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction(['transactions'], 'readwrite');
+      const store = transaction.objectStore('transactions');
+      const index = store.index('accountId');
+      const request = index.openCursor(IDBKeyRange.only(accountId));
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = (event) => {
+        const cursor = (event.target as IDBRequest).result;
+        if (cursor) {
+          cursor.delete();
+          cursor.continue();
+        } else {
+          resolve();
+        }
+      };
+    });
+  }
+
   // Account operations
   async addAccount(account: Account): Promise<void> {
     return this.encryptAndStore('accounts', account);
+  }
+
+  async getAccount(id: string): Promise<Account | null> {
+    return this.retrieveAndDecrypt('accounts', id);
   }
 
   async getAllAccounts(): Promise<Account[]> {
@@ -293,6 +349,29 @@ export class DatabaseService {
           reject(error);
         }
       };
+    });
+  }
+
+  async updateAccount(account: Account): Promise<void> {
+    return this.encryptAndStore('accounts', account);
+  }
+
+  async deleteAccount(id: string): Promise<void> {
+    if (!this.db) {
+      throw new Error('Database not initialized');
+    }
+
+    // First delete all transactions related to this account
+    await this.deleteTransactionsByAccountId(id);
+
+    // Then delete the account itself
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction(['accounts'], 'readwrite');
+      const store = transaction.objectStore('accounts');
+      const request = store.delete(id);
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
     });
   }
 

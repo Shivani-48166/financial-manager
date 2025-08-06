@@ -29,17 +29,7 @@ const AppContent: React.FC = () => {
     setFakeData(data);
   }
 
-  // Initialize default account if none exists
-  useEffect(() => {
-    if (isAuthenticated && accounts.length === 0) {
-      addAccount({
-        name: 'Main Account',
-        type: 'checking',
-        balance: 0,
-        currency: 'USD'
-      }).catch(console.error);
-    }
-  }, [isAuthenticated, accounts.length, addAccount]);
+
 
   // Apply theme on mount
   useEffect(() => {

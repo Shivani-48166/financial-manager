@@ -1,39 +1,30 @@
 import React, { useState } from 'react';
 import { X, CreditCard, Wallet, Building, PiggyBank } from 'lucide-react';
 import { useAccounts } from '../hooks/useAccounts';
+import { Account } from '../types';
 
-interface AddAccountModalProps {
+interface EditAccountModalProps {
+  account: Account;
   onClose: () => void;
 }
 
-export const AddAccountModal: React.FC<AddAccountModalProps> = ({ onClose }) => {
+export const EditAccountModal: React.FC<EditAccountModalProps> = ({ account, onClose }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    type: 'checking' as 'checking' | 'savings' | 'cash' | 'credit',
-    balance: '',
-    currency: 'INR'
+    name: account.name,
+    type: account.type as 'checking' | 'savings' | 'cash' | 'credit',
+    balance: account.balance.toString(),
+    currency: account.currency
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { addAccount } = useAccounts();
+  const { updateAccount } = useAccounts();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!formData.name.trim()) {
-      setError('Please enter an account name');
-      return;
-    }
-
-    if (!formData.balance.trim()) {
-      setError('Please enter the current balance for this account');
-      return;
-    }
-
-    const balance = parseFloat(formData.balance);
-    if (isNaN(balance)) {
-      setError('Please enter a valid balance amount');
+    
+    if (!formData.name || !formData.balance) {
+      setError('Please fill in all required fields');
       return;
     }
 
@@ -41,16 +32,16 @@ export const AddAccountModal: React.FC<AddAccountModalProps> = ({ onClose }) => 
     setError(null);
 
     try {
-      await addAccount({
-        name: formData.name.trim(),
+      await updateAccount(account.id, {
+        name: formData.name,
         type: formData.type,
-        balance: balance,
+        balance: parseFloat(formData.balance),
         currency: formData.currency
       });
-
+      
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to add account');
+      setError(err instanceof Error ? err.message : 'Failed to update account');
     } finally {
       setLoading(false);
     }
@@ -67,7 +58,7 @@ export const AddAccountModal: React.FC<AddAccountModalProps> = ({ onClose }) => 
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full">
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Add Account</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Edit Account</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
@@ -122,7 +113,7 @@ export const AddAccountModal: React.FC<AddAccountModalProps> = ({ onClose }) => 
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Initial Balance *
+              Current Balance *
             </label>
             <input
               type="number"
@@ -149,7 +140,7 @@ export const AddAccountModal: React.FC<AddAccountModalProps> = ({ onClose }) => 
               className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
               disabled={loading}
             >
-              {loading ? 'Adding...' : 'Add Account'}
+              {loading ? 'Updating...' : 'Update Account'}
             </button>
           </div>
         </form>

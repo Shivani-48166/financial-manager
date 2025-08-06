@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Plus, TrendingUp, TrendingDown, DollarSign, CreditCard, PiggyBank, Target } from 'lucide-react';
 import { useAccounts } from '../hooks/useAccounts';
 import { useTransactions } from '../hooks/useTransactions';
@@ -28,27 +28,29 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6 p-2 lg:p-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Welcome back! Here's your financial overview.
           </p>
         </div>
-        <div className="mt-4 sm:mt-0 flex flex-row space-x-2 sm:space-x-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:flex-shrink-0">
           <button
             onClick={() => setShowAddAccount(true)}
-            className="btn-primary justify-center flex-1 sm:flex-none text-sm sm:text-base py-2 sm:py-2 px-3 sm:px-4"
+            className="btn-primary justify-center text-sm py-2 px-3 sm:px-4 whitespace-nowrap"
           >
-            <CreditCard className="h-4 w-4 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-            Add Account
+            <CreditCard className="h-4 w-4 mr-2" />
+            <span className="hidden xs:inline">Add Account</span>
+            <span className="xs:hidden">Account</span>
           </button>
           <button
             onClick={() => setShowAddTransaction(true)}
-            className="btn-primary justify-center flex-1 sm:flex-none text-sm sm:text-base py-2 sm:py-2 px-3 sm:px-4"
+            className="btn-primary justify-center text-sm py-2 px-3 sm:px-4 whitespace-nowrap"
           >
-            <Plus className="h-4 w-4 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-            Add Transaction
+            <Plus className="h-4 w-4 mr-2" />
+            <span className="hidden xs:inline">Add Transaction</span>
+            <span className="xs:hidden">Transaction</span>
           </button>
         </div>
       </div>
@@ -105,36 +107,36 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 min-w-0">
         {/* Accounts Section */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 min-w-0">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Your Accounts</h2>
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Your Accounts</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 Manage your financial accounts
               </p>
             </div>
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {accounts.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="bg-gray-100 dark:bg-gray-700 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                    <CreditCard className="h-10 w-10 text-gray-400" />
+                <div className="text-center py-12 sm:py-16">
+                  <div className="bg-gray-100 dark:bg-gray-700 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                    <CreditCard className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">No accounts yet</h3>
-                  <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-3">No accounts yet</h3>
+                  <p className="text-gray-500 dark:text-gray-400 mb-6 sm:mb-8 max-w-sm mx-auto text-sm sm:text-base">
                     Connect your bank accounts or add manual accounts to start tracking your finances
                   </p>
                   <button
                     onClick={() => setShowAddAccount(true)}
-                    className="btn-primary text-lg px-8 py-3"
+                    className="btn-primary text-base sm:text-lg px-6 sm:px-8 py-2 sm:py-3"
                   >
-                    <Plus className="h-5 w-5 mr-2" />
+                    <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     Add Your First Account
                   </button>
                 </div>
               ) : (
-                <div className="grid gap-4">
+                <div className="grid gap-3 sm:gap-4">
                   {accounts.map((account) => (
                     <AccountCard key={account.id} account={account} />
                   ))}
@@ -145,15 +147,15 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Recent Transactions */}
-        <div>
+        <div className="min-w-0">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Recent Activity</h2>
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Recent Activity</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 Your latest transactions
               </p>
             </div>
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {recentTransactions.length === 0 ? (
                 <div className="text-center py-8">
                   <TrendingUp className="h-10 w-10 text-gray-400 mx-auto mb-3" />
@@ -162,7 +164,9 @@ export const Dashboard: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <TransactionList transactions={recentTransactions} showAccount />
+                <div className="overflow-hidden">
+                  <TransactionList transactions={recentTransactions} showAccount />
+                </div>
               )}
             </div>
           </div>
