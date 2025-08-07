@@ -1,5 +1,5 @@
 import { EncryptionService } from './encryption';
-import type { Transaction, Account, Budget, Goal, RecurringTransaction, AppSettings } from '../types';
+import type { Transaction, Account, Budget, RecurringTransaction, AppSettings } from '../types';
 
 /**
  * IndexedDB service with encryption for all sensitive financial data
@@ -414,19 +414,18 @@ export class DatabaseService {
    * Export all data for backup
    */
   async exportAllData(): Promise<any> {
-    const [transactions, accounts, budgets, goals, recurringTransactions] = await Promise.all([
+    const [transactions, accounts, budgets] = await Promise.all([
       this.getAllTransactions(),
       this.getAllAccounts(),
       this.getAllBudgets(),
-      // Add other data retrieval methods as needed
     ]);
 
     return {
       transactions,
       accounts,
       budgets,
-      goals: goals || [],
-      recurringTransactions: recurringTransactions || [],
+      goals: [],
+      recurringTransactions: [],
       exportDate: new Date().toISOString()
     };
   }

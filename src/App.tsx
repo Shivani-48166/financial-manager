@@ -16,6 +16,7 @@ import { CalendarView } from './components/CalendarView';
 import { CurrencyManager } from './components/CurrencyManager';
 import { BudgetAlerts } from './components/BudgetAlerts';
 import { FakeVaultMode } from './components/FakeVaultMode';
+import { Investments } from './components/Investments';
 import { Account, Transaction } from './types';
 
 const AppContent: React.FC = () => {
@@ -28,8 +29,6 @@ const AppContent: React.FC = () => {
   function handleFakeDataUpdate(data: { accounts: Account[]; transactions: Transaction[]; }) {
     setFakeData(data);
   }
-
-
 
   // Apply theme on mount
   useEffect(() => {
@@ -69,6 +68,8 @@ const AppContent: React.FC = () => {
         return <Dashboard />;
       case 'accounts':
         return <Accounts />;
+      case 'investments':
+        return <Investments />;
       case 'reports':
         return <Reports />;
       case 'budget':
@@ -83,8 +84,8 @@ const AppContent: React.FC = () => {
         return <BudgetAlerts />;
       case 'vault':
         return (
-          <FakeVaultMode 
-            isActive={fakeVaultActive} 
+          <FakeVaultMode
+            isActive={fakeVaultActive}
             onToggle={setFakeVaultActive}
             onFakeDataUpdate={handleFakeDataUpdate}
           />

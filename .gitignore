@@ -26,3 +26,5 @@ npm-debug.log*
 pids
 *.pid
 *.seed
+# Local Netlify folder
+.netlify

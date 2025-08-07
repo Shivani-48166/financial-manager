@@ -11,8 +11,25 @@ interface TransactionFormProps {
 }
 
 const CATEGORIES = {
-  income: ['Salary', 'Freelance', 'Investment', 'Gift', 'Other'],
-  expense: ['Food', 'Transportation', 'Entertainment', 'Shopping', 'Bills', 'Healthcare', 'Other']
+  income: [
+    'Salary',
+    'Freelance',
+    'Gift',
+    'Bonus',
+    'Refund',
+    'Other'
+  ],
+  expense: [
+    'Food',
+    'Transportation',
+    'Entertainment',
+    'Shopping',
+    'Bills',
+    'Healthcare',
+    'Education',
+    'Insurance',
+    'Other'
+  ]
 };
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({ type, onClose, onSuccess }) => {

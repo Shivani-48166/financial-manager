@@ -7,25 +7,8 @@ export const PinLogin: React.FC = () => {
   const [showPin, setShowPin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [biometricSupported, setBiometricSupported] = useState(false);
 
-  const { login, biometricEnabled, loginWithBiometric, enableBiometric } = useAuth();
-
-  useEffect(() => {
-    checkBiometricSupport();
-  }, []);
-
-  const checkBiometricSupport = async () => {
-    if (window.PublicKeyCredential && PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
-      try {
-        const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-        setBiometricSupported(available);
-      } catch (error) {
-        console.error('Error checking biometric support:', error);
-        setBiometricSupported(false);
-      }
-    }
-  };
+  const { login, biometricEnabled, loginWithBiometric } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

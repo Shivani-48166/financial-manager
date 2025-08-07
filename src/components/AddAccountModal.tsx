@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CreditCard, Wallet, Building, PiggyBank } from 'lucide-react';
+import { X, CreditCard, Wallet, Building, PiggyBank, TrendingUp } from 'lucide-react';
 import { useAccounts } from '../hooks/useAccounts';
 
 interface AddAccountModalProps {
@@ -9,7 +9,7 @@ interface AddAccountModalProps {
 export const AddAccountModal: React.FC<AddAccountModalProps> = ({ onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
-    type: 'checking' as 'checking' | 'savings' | 'cash' | 'credit',
+    type: 'checking' as 'checking' | 'savings' | 'cash' | 'credit' | 'investment',
     balance: '',
     currency: 'INR'
   });
@@ -60,7 +60,8 @@ export const AddAccountModal: React.FC<AddAccountModalProps> = ({ onClose }) => 
     { value: 'checking', label: 'Checking', icon: CreditCard },
     { value: 'savings', label: 'Savings', icon: PiggyBank },
     { value: 'cash', label: 'Cash', icon: Wallet },
-    { value: 'credit', label: 'Credit', icon: Building }
+    { value: 'credit', label: 'Credit', icon: Building },
+    { value: 'investment', label: 'Investment', icon: TrendingUp }
   ];
 
   return (

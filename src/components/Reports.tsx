@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from 'recharts';
 import { useTransactions } from '../hooks/useTransactions';
+import { useAccounts } from '../hooks/useAccounts';
 import { format, startOfMonth, endOfMonth, subMonths } from 'date-fns';
 
 const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'];
@@ -8,6 +9,12 @@ const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'
 export const Reports: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const { transactions, getTotalByType } = useTransactions();
+  const { accounts } = useAccounts();
+
+  // Calculate total account balances
+  const totalAccountBalance = useMemo(() => {
+    return accounts.reduce((total, account) => total + account.balance, 0);
+  }, [accounts]);
 
   const periodData = useMemo(() => {
     const now = new Date();
@@ -49,7 +56,16 @@ export const Reports: React.FC = () => {
       if (!acc[key]) {
         acc[key] = { name: key, income: 0, expense: 0 };
       }
-      acc[key][transaction.type] += transaction.amount;
+      // Map investment transaction types to income/expense
+      const mappedType = ['investment_sell', 'dividend', 'interest'].includes(transaction.type)
+        ? 'income'
+        : ['investment_buy'].includes(transaction.type)
+        ? 'expense'
+        : transaction.type as 'income' | 'expense';
+
+      if (mappedType === 'income' || mappedType === 'expense') {
+        acc[key][mappedType] += transaction.amount;
+      }
       return acc;
     }, {} as Record<string, { name: string; income: number; expense: number }>);
 
@@ -120,7 +136,7 @@ export const Reports: React.FC = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
@@ -153,10 +169,38 @@ export const Reports: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1">
+        <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Net Balance</h3>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Account Balance</h3>
+              <p className={`text-2xl md:text-3xl font-bold mt-2 ${
+                totalAccountBalance >= 0
+                  ? 'text-green-600 dark:text-green-400'
+                  : 'text-red-600 dark:text-red-400'
+              }`}>
+                {totalAccountBalance >= 0 ? '' : '-'}₹{Math.abs(totalAccountBalance).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </p>
+            </div>
+            <div className={`p-3 rounded-full ${
+              totalAccountBalance >= 0
+                ? 'bg-green-100 dark:bg-green-900/20'
+                : 'bg-red-100 dark:bg-red-900/20'
+            }`}>
+              <svg className={`w-6 h-6 ${
+                totalAccountBalance >= 0
+                  ? 'text-green-600 dark:text-green-400'
+                  : 'text-red-600 dark:text-red-400'
+              }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Net Income (Period)</h3>
               <p className={`text-2xl md:text-3xl font-bold mt-2 ${
                 periodData.income - periodData.expenses >= 0
                   ? 'text-green-600 dark:text-green-400'
@@ -175,7 +219,7 @@ export const Reports: React.FC = () => {
                   ? 'text-green-600 dark:text-green-400'
                   : 'text-red-600 dark:text-red-400'
               }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
           </div>
@@ -280,7 +324,7 @@ export const Reports: React.FC = () => {
                   height={36}
                   iconType="circle"
                   wrapperStyle={{ paddingTop: '20px', fontSize: '12px' }}
-                  formatter={(value, entry) => `${value} (₹${entry.payload.value.toFixed(0)})`}
+                  formatter={(value, entry) => `${value} (₹${entry.payload?.value?.toFixed(0) || '0'})`}
                 />
               </PieChart>
             </ResponsiveContainer>

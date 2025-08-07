@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CreditCard, Wallet, Building, PiggyBank } from 'lucide-react';
+import { X, CreditCard, Wallet, Building, PiggyBank, TrendingUp } from 'lucide-react';
 import { useAccounts } from '../hooks/useAccounts';
 import { Account } from '../types';
 
@@ -51,7 +51,8 @@ export const EditAccountModal: React.FC<EditAccountModalProps> = ({ account, onC
     { value: 'checking', label: 'Checking', icon: CreditCard },
     { value: 'savings', label: 'Savings', icon: PiggyBank },
     { value: 'cash', label: 'Cash', icon: Wallet },
-    { value: 'credit', label: 'Credit', icon: Building }
+    { value: 'credit', label: 'Credit', icon: Building },
+    { value: 'investment', label: 'Investment', icon: TrendingUp }
   ];
 
   return (

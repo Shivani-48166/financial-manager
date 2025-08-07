@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Home, CreditCard, TrendingUp, Settings, PieChart, Target, Calendar, DollarSign, Bell, Shield } from 'lucide-react';
+import { Menu, X, Home, CreditCard, TrendingUp, Settings, PieChart, Target, Calendar, DollarSign, Bell, Shield, BarChart3 } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,6 +13,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageCha
   const navigation = [
     { name: 'Dashboard', id: 'dashboard', icon: Home },
     { name: 'Accounts', id: 'accounts', icon: CreditCard },
+    { name: 'Investments', id: 'investments', icon: BarChart3 },
     { name: 'Reports', id: 'reports', icon: TrendingUp },
     { name: 'Budget Planning', id: 'budget', icon: PieChart },
     { name: 'Savings Goals', id: 'goals', icon: Target },

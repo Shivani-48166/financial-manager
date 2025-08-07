@@ -71,7 +71,7 @@ export const BudgetAlerts: React.FC = () => {
       
     } catch (error) {
       console.error('Error sending notification:', error);
-      alert(`Notification error: ${error.message}`);
+      alert(`Notification error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 

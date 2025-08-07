@@ -148,10 +148,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw new Error('WebAuthn not supported');
       }
 
-      // Store the PIN for biometric login
-      const storedPin = localStorage.getItem('fm_pin_hash');
-      if (!storedPin) {
-        throw new Error('No PIN found');
+      // Check if user is currently authenticated (has a valid session)
+      if (!isAuthenticated) {
+        throw new Error('User must be logged in to enable biometric authentication');
       }
 
       const credential = await navigator.credentials.create({
@@ -177,6 +176,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if (credential) {
+        // Store the current PIN for biometric login (we need to get it from the user)
+        const pin = prompt('Enter your current PIN to complete biometric setup:');
+        if (!pin) {
+          throw new Error('PIN required for biometric setup');
+        }
+
+        // Verify the PIN is correct
+        const pinHash = await hashPin(pin);
+        const storedPinHash = localStorage.getItem('fm_pin_hash');
+        if (pinHash !== storedPinHash) {
+          throw new Error('Invalid PIN');
+        }
+
+        // Store the PIN for biometric login (encoded)
+        localStorage.setItem('fm_biometric_pin', btoa(pin));
         localStorage.setItem('fm_biometric_enabled', 'true');
         localStorage.setItem('fm_biometric_id', btoa(String.fromCharCode(...new Uint8Array((credential as PublicKeyCredential).rawId))));
         setBiometricEnabled(true);
@@ -192,8 +206,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loginWithBiometric = async (): Promise<boolean> => {
     try {
       const credentialId = localStorage.getItem('fm_biometric_id');
-      if (!credentialId) {
-        throw new Error('No biometric credential found');
+      const storedPin = localStorage.getItem('fm_biometric_pin');
+
+      if (!credentialId || !storedPin) {
+        throw new Error('Biometric authentication not properly set up');
       }
 
       const assertion = await navigator.credentials.get({
@@ -209,26 +225,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if (assertion) {
-        // Get the stored encrypted PIN for biometric login
-        const storedPin = localStorage.getItem('fm_biometric_pin');
-        if (storedPin) {
-          // Decode the stored PIN and use it to login
-          const pin = atob(storedPin);
-          await db.initialize(pin);
-          setIsAuthenticated(true);
-          resetAutoLockTimer();
-          return true;
-        } else {
-          // First time setup - ask for PIN once and store it
-          const pin = prompt('Enter your PIN to complete biometric setup:');
-          if (!pin) return false;
-          
-          const success = await login(pin);
-          if (success) {
-            localStorage.setItem('fm_biometric_pin', btoa(pin));
-          }
-          return success;
-        }
+        // Decode the stored PIN and use it to login automatically
+        const pin = atob(storedPin);
+        await db.initialize(pin);
+        setIsAuthenticated(true);
+        resetAutoLockTimer();
+        return true;
       }
       return false;
     } catch (error) {
