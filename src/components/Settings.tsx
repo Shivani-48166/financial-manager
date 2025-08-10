@@ -19,10 +19,10 @@ export const Settings: React.FC = () => {
 
   const colorSchemes = [
     { id: 'blue', name: 'Teal & Mint', primary: 'bg-teal-500', secondary: 'bg-emerald-200' },
-    { id: 'green', name: 'Green', primary: 'bg-green-500', secondary: 'bg-green-100' },
-    { id: 'purple', name: 'Purple', primary: 'bg-purple-500', secondary: 'bg-purple-100' },
-    { id: 'slate', name: 'Slate', primary: 'bg-slate-500', secondary: 'bg-slate-100' },
-    { id: 'teal', name: 'Teal', primary: 'bg-teal-500', secondary: 'bg-teal-100' },
+    { id: 'green', name: 'Teal & Mint', primary: 'bg-teal-500', secondary: 'bg-emerald-200' },
+    { id: 'purple', name: 'Teal & Mint', primary: 'bg-teal-500', secondary: 'bg-emerald-200' },
+    { id: 'slate', name: 'Teal & Mint', primary: 'bg-teal-500', secondary: 'bg-emerald-200' },
+    { id: 'teal', name: 'Teal & Mint', primary: 'bg-teal-500', secondary: 'bg-emerald-200' },
   ];
 
   const handleThemeChange = (newTheme: string) => {
