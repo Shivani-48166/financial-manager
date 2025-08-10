@@ -51,6 +51,18 @@
   .text-primary-dark-dynamic {
     color: var(--text-primary-dark);
   }
+
+  .text-accent {
+    color: #f97316;
+  }
+
+  .bg-accent {
+    background-color: #f97316;
+  }
+
+  .border-accent {
+    border-color: #f97316;
+  }
 }
 
 /* Enhanced scrollbar */
