@@ -18,7 +18,7 @@ export const Settings: React.FC = () => {
   const db = DatabaseService.getInstance();
 
   const colorSchemes = [
-    { id: 'blue', name: 'Slate', primary: 'bg-slate-500', secondary: 'bg-slate-100' },
+    { id: 'blue', name: 'Vivid Teal', primary: 'bg-teal-500', secondary: 'bg-teal-100' },
     { id: 'green', name: 'Zinc', primary: 'bg-zinc-500', secondary: 'bg-zinc-100' },
     { id: 'purple', name: 'Neutral', primary: 'bg-neutral-500', secondary: 'bg-neutral-100' },
     { id: 'slate', name: 'Stone', primary: 'bg-stone-500', secondary: 'bg-stone-100' },
